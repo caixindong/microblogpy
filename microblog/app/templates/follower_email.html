@@ -1,0 +1,23 @@
+<p>Dear {{user.nickname}},</p>
+<p>
+    <!--_external = True 参数。默认情况下，url_for 函数生成的 URLs 是与当前页面的域名相关的。-->
+    <!--例如，url_for(“index”) 返回值将会是 /index，但是在实际视图函数中返回的是 http://localhost:5000/index。-->
+    <!--在邮件中是不存在域名的内容，因此我们必须要生成完全的包含域名的 URLs，_external 参数就是为这个目的-->
+    <a href="{{url_for('user', nickname = follower.nickname, _external = True)}}">
+        {{follower.nickname}}
+    </a>
+    is now a follower.
+</p>
+<table>
+    <tr valign="top">
+        <td><img src="{{follower.avatar(50)}}"></td>
+        <td>
+            <a href="{{url_for('user', nickname = follower.nickname, _external = True)}}">
+                {{follower.nickname}}
+            </a><br />
+            {{follower.about_me}}
+        </td>
+    </tr>
+</table>
+<p>Regards,</p>
+<p>The <code>microblog</code> admin</p>

@@ -1,0 +1,29 @@
+{#<table>#}
+{#    <tr valign="top">#}
+{#        <td><img src="{{post.author.avatar(50)}}"></td>#}
+{#        <td>#}
+{#            <p><a href="{{url_for('user', nickname = post.author.nickname)}}">{{post.author.nickname}}</a> said {{momentjs(post.timestamp).fromNow()}}:</p>#}
+{#            <p><strong>{{post.body}}</strong></p>#}
+{#            {% if post.author.id == g.user.id %}#}
+{#            <div><a href="{{url_for('delete', id=post.id)}}">Delete</a></div>#}
+{#            {% endif %}#}
+{#        </td>#}
+{#    </tr>#}
+{#</table>#}
+
+<div class="row-fluid">
+    <div class="span1 text-center">
+        <img class="img-circle" src="{{post.author.avatar(50)}}">
+        <p><a href="{{url_for('user', nickname = post.author.nickname)}}">{{post.author.nickname}}</a></p>
+    </div>
+    <div class="span10">
+            <p>said {{momentjs(post.timestamp).fromNow()}}:</p>
+            <p><strong>{{post.body}}</strong></p>
+    </div>
+    <div class="span1 text-center">
+        {% if post.author.id == g.user.id %}
+            <div><a href="{{url_for('delete', id=post.id)}}">Delete</a></div>
+        {% endif %}
+    </div>
+</div>
+<hr width="98%" align="center" color="#987cb9" size="1">

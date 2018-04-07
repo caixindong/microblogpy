@@ -1,0 +1,42 @@
+<!--模板继承自 base.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="hero-unit">
+        <h1>Hi, {{g.user.nickname}}!</h1>
+    </div>
+    <div>
+        <form action="" method="post" name="post">
+            {{form.hidden_tag()}}
+            <div>
+                <label>Say something:</label>
+                {{form.post(size=80, maxlength=140)}}
+                {% for error in form.errors.post %}
+                    <span style="color: red;">[{{error}}]</span><br>
+                {% endfor %}
+                <br>
+                <button type="submit" class="btn-primary">Post!</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        {% for post in posts.items %}
+            {% include 'post.html' %}
+        {% endfor %}
+        <nav aria-label="...">
+            <ul class="pager">
+                {% if posts.has_prev %}
+                    <li class="previous"><a href="{{url_for('index', page = posts.prev_num)}}"><span aria-hidden="true">&larr;</span>Older</a></li>
+                {% else %}
+                    <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span>Older</a></li>
+                {% endif %}
+                {% if posts.has_next %}
+                    <li class="next"><a href="{{url_for('index', page = posts.next_num)}}">Newer <span aria-hidden="true">&rarr;</span></a></li>
+                {% else %}
+                   <li class="next disabled"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

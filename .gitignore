@@ -1,0 +1,7 @@
+flask/
+*.db
+*.pyc
+db_repository/
+search.db/
+tmp/
+.idea
