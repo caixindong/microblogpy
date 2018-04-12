@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from config import basedir
 from app import app, db
-from app.models import User, Post
+from app.models import User, Post, Blog
 
 
 class TestCase(unittest.TestCase):
@@ -27,33 +27,41 @@ class TestCase(unittest.TestCase):
     #     expected = 'https://en.gravatar.com/avatar/d4c74594d841139328695756648b6bd6'
     #     assert avatar[0:len(expected)] == expected
 
-    def test_post(self):
-        # u = User(nickname='milk', email='milk@example.com')
-        # db.session.add(u)
-        # db.session.commit()
-        utcnow = datetime.utcnow()
-        # p = Post(body='xxxx',timestamp=utcnow + timedelta(seconds = 1),author=u)
-        # db.session.add(p)
-        # db.session.commit()
-        # assert u.posts.count() == 1
+    # def test_post(self):
+    #     # u = User(nickname='milk', email='milk@example.com')
+    #     # db.session.add(u)
+    #     # db.session.commit()
+    #     utcnow = datetime.utcnow()
+    #     # p = Post(body='xxxx',timestamp=utcnow + timedelta(seconds = 1),author=u)
+    #     # db.session.add(p)
+    #     # db.session.commit()
+    #     # assert u.posts.count() == 1
+    #     u2 = User(nickname='dane', email='dane@wexample.com')
+    #     db.session.add(u2)
+    #     db.session.commit()
+    #     p2 = Post(body='ppx', timestamp=utcnow + timedelta(seconds=2), author=u2)
+    #     db.session.add(p2)
+    #     db.session.commit()
+    #     # assert u.is_following(u2) == False
+    #     # assert u.followed.count() == 0
+    #     # u.follow(u2)
+    #     # assert u.is_following(u2) == True
+    #     # assert u.followed.count() == 1
+    #     # assert u.followed_posts().count() == 1
+    #     assert u2.followed_posts().count() == 0
+    #     u2.follow(u2)
+    #     db.session.add(u2)
+    #     db.session.commit()
+    #     assert u2.followed_posts().count() == 1
+
+    def test_blog(self):
         u2 = User(nickname='dane', email='dane@wexample.com')
         db.session.add(u2)
         db.session.commit()
-        p2 = Post(body='ppx', timestamp=utcnow + timedelta(seconds=2), author=u2)
-        db.session.add(p2)
+        b2 = Blog(title='hello', content='world', timestamp=datetime.utcnow(), author=u2)
+        db.session.add(b2)
         db.session.commit()
-        # assert u.is_following(u2) == False
-        # assert u.followed.count() == 0
-        # u.follow(u2)
-        # assert u.is_following(u2) == True
-        # assert u.followed.count() == 1
-        # assert u.followed_posts().count() == 1
-        assert u2.followed_posts().count() == 0
-        u2.follow(u2)
-        db.session.add(u2)
-        db.session.commit()
-        assert u2.followed_posts().count() == 1
-
+        assert u2.blogs.count() == 1
 
 
 

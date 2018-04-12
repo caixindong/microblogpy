@@ -1,0 +1,29 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Vue 测试实例 - 菜鸟教程(runoob.com)</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+</head>
+<body>
+ <div id="ex">
+     <button v-on:click="greet">click</button>
+ </div>
+    <script>
+        var vm = new Vue({
+            el:'#ex',
+            data: {title:'123', content:'3333'},
+            methods: {
+                greet: function (event) {
+                     axios.post('/api/blog',this.$data).then(function (response) {
+                         alert('success'+JSON.stringify(response));
+                     }).catch(function (e) {
+                         alert('fail');
+                     });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

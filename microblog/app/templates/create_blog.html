@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="vm" class="container">
+        <div>
+            <label>标题</label>
+            <div>
+                <input v-model="title" name="name" type="text" placeholder="标题" style="width: 100%">
+            </div>
+        </div>
+        <div>
+            <label>内容</label>
+            <div>
+                <textarea v-model="content" rows="16" name="content" placeholder="内容" style="resize: none;width: 100%"></textarea>
+            </div>
+        </div>
+        <div>
+            <button @click="submit" class="btn btn-large btn-primary"><i>Post</i></button>
+        </div>
+        </form>
+    </div>
+    <script>
+        function initVM(blog) {
+            var vm = new Vue({
+                el: '#vm',
+                data: blog,
+                methods: {
+                    submit: function (event) {
+                        axios.post('/api/blog', this.$data).then(function (response) {
+                            alert('success'+JSON.stringify(response));
+                        }).catch(function (e) {
+                            alert('fail');
+                        });
+                    }
+                }
+            });
+        }
+        $(function () {
+            initVM({
+                title: '',
+                content: ''
+            });
+        })
+    </script>
+{% endblock %}

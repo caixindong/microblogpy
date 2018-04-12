@@ -1,10 +1,10 @@
 # coding:utf-8
 from datetime import datetime
-from flask import render_template, flash, redirect, session, url_for, request, g
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from app import app, lm, oid, db
 from .forms import LoginForm, EditForm, PostForm, SearchForm
-from .models import User, Post
+from .models import User, Post, Blog
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 from .emails import follower_notification
 from config import DATABASE_QUERY_TIMEOUT
@@ -18,7 +18,7 @@ from flask_sqlalchemy import get_debug_queries
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index(page = 1):
+def index(page=1):
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user)
@@ -193,7 +193,7 @@ def unfollow(nickname):
     return redirect(url_for('user', nickname=nickname))
 
 
-@app.route('/search',methods=['POST'])
+@app.route('/search', methods=['POST'])
 @login_required
 def search():
     if not g.search_form.validate_on_submit():
@@ -208,6 +208,7 @@ def search_results(query):
     return render_template('search_results.html',
                            query=query,
                            results=results)
+
 
 @app.route('/delete/<int:id>')
 @login_required
@@ -229,5 +230,59 @@ def delete(id):
 def after_request(response):
     for query in get_debug_queries():
         if query.duration >= DATABASE_QUERY_TIMEOUT:
-            app.logger.warning("SLOW QUERY: %s\nParameters: %s\nDuration: %fs\nContext: %s\n" % (query.statement, query.parameters, query.duration, query.context))
+            app.logger.warning("SLOW QUERY: %s\nParameters: %s\nDuration: %fs\nContext: %s\n" % (
+                query.statement, query.parameters, query.duration, query.context))
     return response
+
+
+@app.route('/api/tasks', methods=['GET'])
+def getTasks():
+    tasks = [
+        {
+            'id': 1,
+            'msg': 'help'
+        },
+        {
+            'id': 2,
+            'msg': 'no'
+        }
+    ]
+    return jsonify({'tasks': tasks})
+
+
+@app.route('/api/tasks/p', methods=['POST'])
+def posttasks():
+    if not request.json or not 'title' in request.json:
+        abort(400)
+    task = {
+        'title': request.json['title'],
+        'des': request.json.get('des', ''),
+        'done': False
+    }
+    return jsonify({'tasks': [task]}), 201
+
+
+@app.route('/api/blog', methods=['POST'])
+def createblog():
+    # import pdb;pdb.set_trace()
+    if not request.json:
+        abort(404)
+    if not 'title' in request.json:
+        abort(404)
+    if not 'content' in request.json:
+        abort(404)
+    blog = Blog(title=request.json['title'], content=request.json['content'], timestamp=datetime.utcnow(), author=g.user)
+    db.session.add(blog)
+    db.session.commit()
+    return jsonify({'code': 1}), 200
+
+
+@app.route('/newblog', methods=['GET'])
+@login_required
+def newblog():
+    return render_template('create_blog.html',
+                           title='New blog')
+
+@app.route('/test', methods=['GET'])
+def test():
+    return render_template('test.html')

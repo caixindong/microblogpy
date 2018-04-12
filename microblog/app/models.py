@@ -28,6 +28,7 @@ class User(db.Model):
                                secondaryjoin=(followers.c.followed_id == id),
                                backref=db.backref('followers', lazy='dynamic'),
                                lazy='dynamic')
+    blogs = db.relationship('Blog', backref='author', lazy='dynamic')
 
     @property
     def is_authenticated(self):
@@ -90,6 +91,14 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % self.body
+
+
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    content = db.Column(db.String(800))
+    timestamp = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 flask_whooshalchemy.whoosh_index(app, Post)
