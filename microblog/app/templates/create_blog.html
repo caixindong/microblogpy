@@ -27,9 +27,10 @@
                 methods: {
                     submit: function (event) {
                         axios.post('/api/blog', this.$data).then(function (response) {
-                            alert('success'+JSON.stringify(response));
+                            setTimeout("javascript:location.href='index'", 1000);
+                            alert('发表成功');
                         }).catch(function (e) {
-                            alert('fail');
+                            alert('发表失败');
                         });
                     }
                 }

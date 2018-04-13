@@ -1,29 +1,64 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Vue 测试实例 - 菜鸟教程(runoob.com)</title>
+    <title>Vue test</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="/static/js/vue.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 </head>
 <body>
  <div id="ex">
-     <button v-on:click="greet">click</button>
+     <button @click="greet">click</button>
+     <p>{{ title }}</p>
+     <a :href="url">aaaa</a>
+     <p>{{ blog }}</p>
+     <input v-model="question">
+     <p>{{ answer }}</p>
+     <button @click="getlist">get list</button>
  </div>
-    <script>
-        var vm = new Vue({
-            el:'#ex',
-            data: {title:'123', content:'3333'},
-            methods: {
-                greet: function (event) {
-                     axios.post('/api/blog',this.$data).then(function (response) {
-                         alert('success'+JSON.stringify(response));
-                     }).catch(function (e) {
-                         alert('fail');
-                     });
-                }
-            }
-        });
-    </script>
+ <script>
+     var vm = new Vue({
+         el:'#ex',
+         data: {
+             title:'123',
+             content:'3333',
+             url:'',
+             question: 'yes or no',
+             answer: 'thinking',
+         },
+         methods: {
+             greet: function (event) {
+                 this.title = '4444444';
+                 this.url = 'http://www.baidu.com';
+                 axios.post('http://0.0.0.0:5000/api/blog',this.$data).then(function (response) {
+                     alert('success'+JSON.stringify(response));
+                 }).catch(function (e) {
+                     alert('fail');
+                 });
+             },
+             getlist: function (event) {
+                 axios.get('http://0.0.0.0:5000/api/bloglist/1').then(function (response) {
+                     alert(JSON.stringify(response));
+                 }).catch(function (e) {
+                     alert('fail');
+                 })
+             }
+         },
+         computed: {
+             blog: function () {
+                 return 'title:'+this.title+';content:'+this.content;
+             }
+         },
+         watch: {
+             question: function (val) {
+                 if (val == 'yes') {
+                     this.answer = 'yes';
+                 } else {
+                     this.answer = 'no';
+                 }
+             }
+         }
+     });
+ </script>
 </body>
 </html>

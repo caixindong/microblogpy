@@ -32,6 +32,7 @@
                 {% if g.user.is_authenticated %}
                     <li><a href="{{ url_for('user', nickname = g.user.nickname)}}">Your Profile</a></li>
                     <li><a href="{{ url_for('newblog') }}">New blog</a></li>
+                    <li><a href="{{ url_for('bloglist') }}">Blogs</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% endif %}
             </ul>

@@ -262,7 +262,8 @@ def posttasks():
     return jsonify({'tasks': [task]}), 201
 
 
-@app.route('/api/blog', methods=['POST'])
+@app.route('/api/blog/', methods=['POST'])
+@login_required
 def createblog():
     # import pdb;pdb.set_trace()
     if not request.json:
@@ -274,7 +275,18 @@ def createblog():
     blog = Blog(title=request.json['title'], content=request.json['content'], timestamp=datetime.utcnow(), author=g.user)
     db.session.add(blog)
     db.session.commit()
-    return jsonify({'code': 1}), 200
+    return jsonify({'code': 0}), 200
+
+
+@app.route('/api/bloglist/<int:page>', methods=['GET'])
+def getblogs(page):
+    import pdb;pdb.set_trace()
+    blogs = g.user.blogs.paginate(page, POSTS_PER_PAGE, False)
+    return jsonify({'code': 0,
+                    'result': {
+                        'blogs': blogs
+                    }})
+
 
 
 @app.route('/newblog', methods=['GET'])
@@ -283,6 +295,14 @@ def newblog():
     return render_template('create_blog.html',
                            title='New blog')
 
+
+@app.route('/bloglist', methods=['GET'])
+@login_required
+def bloglist():
+    return render_template('blog_list.html',
+                           title='blog list')
+
 @app.route('/test', methods=['GET'])
+@login_required
 def test():
     return render_template('test.html')

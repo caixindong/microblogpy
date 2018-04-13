@@ -9,6 +9,7 @@ from config import basedir, ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_
 from flask_mail import Mail
 from .momentjs import momentjs
 from flask_babel import Babel
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -45,6 +46,9 @@ mail = Mail(app)
 app.jinja_env.globals['momentjs'] = momentjs
 
 babel = Babel(app)
+
+CORS(app)
+
 
 # 这句话放最后
 from app import views, models, mail

@@ -27,7 +27,7 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 # administrator list
 ADMINS = ['caixindong123@gmail.com']
 
-POSTS_PER_PAGE = 3
+POSTS_PER_PAGE = 5
 
 WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
