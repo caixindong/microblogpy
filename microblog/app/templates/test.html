@@ -4,7 +4,7 @@
     <title>Vue test</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
 </head>
 <body>
  <div id="ex">
@@ -15,9 +15,15 @@
      <input v-model="question">
      <p>{{ answer }}</p>
      <button @click="getlist">get list</button>
+  <ol>
+    <li v-for="site in sites">
+      {{ site.name }}
+    </li>
+  </ol>
+  </ol>
  </div>
  <script>
-     var vm = new Vue({
+     new Vue({
          el:'#ex',
          data: {
              title:'123',
@@ -25,6 +31,18 @@
              url:'',
              question: 'yes or no',
              answer: 'thinking',
+             items: [{
+                 title: '123',
+                 author: 'dane',
+             },{
+                 title: '44444',
+                 author: 'dddx',
+             }],
+             sites: [
+                { name: 'Runoob' },
+                { name: 'Google' },
+                 { name: 'Taobao' }
+             ],
          },
          methods: {
              greet: function (event) {
@@ -38,7 +56,14 @@
              },
              getlist: function (event) {
                  axios.get('http://0.0.0.0:5000/api/bloglist/1').then(function (response) {
-                     alert(JSON.stringify(response));
+                     var bs = [];
+                     var blogs = response['data']['result']['blogs'];
+                     for (var i = 0; i< blogs.length;i++) {
+                         bs.push(blogs[i].title);
+                         {#alert(blogs[i].title);#}
+                     }
+                     this.items = blogs;
+                     alert(this.items[0].title);
                  }).catch(function (e) {
                      alert('fail');
                  })

@@ -5,7 +5,6 @@ from urllib import urlencode
 from app import db, app
 import flask_whooshalchemy
 
-
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
                      db.Column('followed_id', db.Integer, db.ForeignKey('user.id')))
@@ -99,6 +98,16 @@ class Blog(db.Model):
     content = db.Column(db.String(800))
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def toJSON(self):
+        jsonBlog = {
+            'id': self.id,
+            'title': self.title,
+            'content': self.content,
+            'timestamp': self.timestamp,
+            'author': self.author.nickname,
+        }
+        return jsonBlog
 
 
 flask_whooshalchemy.whoosh_index(app, Post)

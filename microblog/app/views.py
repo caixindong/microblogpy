@@ -279,12 +279,17 @@ def createblog():
 
 
 @app.route('/api/bloglist/<int:page>', methods=['GET'])
+@login_required
 def getblogs(page):
-    import pdb;pdb.set_trace()
-    blogs = g.user.blogs.paginate(page, POSTS_PER_PAGE, False)
+    # import pdb;pdb.set_trace()
+    blogs = g.user.blogs.paginate(page, POSTS_PER_PAGE, False).items
+    bloglist = []
+    for blog in blogs:
+        blogjson = blog.toJSON()
+        bloglist.append(blogjson)
     return jsonify({'code': 0,
                     'result': {
-                        'blogs': blogs
+                        'blogs': bloglist
                     }})
 
 
@@ -297,12 +302,14 @@ def newblog():
 
 
 @app.route('/bloglist', methods=['GET'])
+@app.route('/bloglist/<int:page>', methods=['GET'])
 @login_required
-def bloglist():
+def bloglist(page=1):
     return render_template('blog_list.html',
-                           title='blog list')
+                           title='blog list',
+                           page=page)
 
 @app.route('/test', methods=['GET'])
 @login_required
 def test():
-    return render_template('test.html')
+    return render_template('test2.html')

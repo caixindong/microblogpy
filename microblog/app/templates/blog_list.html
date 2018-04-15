@@ -1,27 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>标题</th>
-                <th>作者</th>
-                <th>时间</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <a>title</a>
-                </td>
-                <td>
-                    <a>dane</a>
-                </td>
-                <td>
-                    <span>time</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="container">
+        <table class="table" id="vm">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>作者</th>
+                    <th>时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="blog of blogs">
+                    <td>
+                        <a>${ blog.title }</a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('user', nickname=g.user.nickname)}}">${ blog.author }</a>
+                    </td>
+                    <td>
+                        <span>${ blog.timestamp }</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function initVM(page,blogs) {
+            var vm = new Vue({
+                el: '#vm',
+                data: {
+                    page: page,
+                    blogs: blogs,
+                },
+                methods: {
+
+                },
+                delimiters: ['${','}']
+            });
+        }
+        $(function () {
+            axios.get('/api/bloglist/'+{{ page }}).then(function (response) {
+                var page = {{ page }};
+                var blogs = response['data']['result']['blogs'];
+                initVM(page, blogs);
+            }).catch(function (e) {
+                alert('fail');
+            });
+        })
+    </script>
 {% endblock %}

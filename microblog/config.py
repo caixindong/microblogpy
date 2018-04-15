@@ -6,11 +6,11 @@ CSRF_ENABLED = True
 SECRET_KEY = 'you-will-never-guess'
 
 OPENID_PROVIDERS = [
-    { 'name': 'Google', 'url': 'https://www.google.com/accounts/o8/id' },
-    { 'name': 'Yahoo', 'url': 'https://me.yahoo.com' },
-    { 'name': 'AOL', 'url': 'http://openid.aol.com/<username>' },
-    { 'name': 'Flickr', 'url': 'http://www.flickr.com/<username>' },
-    { 'name': 'CN Openid', 'url': 'http://openid.org.cn/' }]
+    {'name': 'Google', 'url': 'https://www.google.com/accounts/o8/id'},
+    {'name': 'Yahoo', 'url': 'https://me.yahoo.com'},
+    {'name': 'AOL', 'url': 'http://openid.aol.com/<username>'},
+    {'name': 'Flickr', 'url': 'http://www.flickr.com/<username>'},
+    {'name': 'CN Openid', 'url': 'http://danecai.openid.org.cn'}]
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_DATABASE_URI = 'sqlite:///'+os.path.join(basedir,'app.db')
@@ -27,7 +27,7 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 # administrator list
 ADMINS = ['caixindong123@gmail.com']
 
-POSTS_PER_PAGE = 5
+POSTS_PER_PAGE = 10
 
 WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
