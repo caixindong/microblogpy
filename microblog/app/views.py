@@ -262,10 +262,9 @@ def posttasks():
     return jsonify({'tasks': [task]}), 201
 
 
-@app.route('/api/blog/', methods=['POST'])
+@app.route('/api/blog', methods=['POST'])
 @login_required
 def createblog():
-    # import pdb;pdb.set_trace()
     if not request.json:
         abort(404)
     if not 'title' in request.json:
@@ -282,14 +281,16 @@ def createblog():
 @login_required
 def getblogs(page):
     # import pdb;pdb.set_trace()
-    blogs = g.user.blogs.paginate(page, POSTS_PER_PAGE, False).items
+    blogs = g.user.blogs.order_by(Blog.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
     bloglist = []
-    for blog in blogs:
+    for blog in blogs.items:
         blogjson = blog.toJSON()
         bloglist.append(blogjson)
     return jsonify({'code': 0,
                     'result': {
-                        'blogs': bloglist
+                        'blogs': bloglist,
+                        'prev': blogs.has_prev,
+                        'next': blogs.has_next,
                     }})
 
 

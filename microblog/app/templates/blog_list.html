@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container">
-        <table class="table" id="vm">
+    <div class="container" id="vm">
+        <table class="table">
             <thead>
                 <tr>
                     <th>标题</th>
@@ -23,14 +23,24 @@
                 </tr>
             </tbody>
         </table>
+        <nav aria-label="...">
+            <ul class="pager">
+                <li v-if="prev" class="previous"><a href="{{ url_for('bloglist', page=page-1) }}"><span aria-hidden="true">&larr;</span>Older</a></li>
+                <li v-else class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span>Older</a></li>
+                <li v-if="next" class="next"><a href="{{ url_for('bloglist', page=page+1) }}">Newer <span aria-hidden="true">&rarr;</span></a></li>
+                <li v-else class="next disabled"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+            </ul>
+        </nav>
     </div>
     <script>
-        function initVM(page,blogs) {
+        function initVM(page,blogs,prev,next) {
             var vm = new Vue({
                 el: '#vm',
                 data: {
                     page: page,
                     blogs: blogs,
+                    prev: prev,
+                    next: next,
                 },
                 methods: {
 
@@ -41,8 +51,12 @@
         $(function () {
             axios.get('/api/bloglist/'+{{ page }}).then(function (response) {
                 var page = {{ page }};
-                var blogs = response['data']['result']['blogs'];
-                initVM(page, blogs);
+                var data = response['data'];
+                var result = data['result'];
+                var blogs = result['blogs'];
+                var prev = result['prev'];
+                var next = result['next'];
+                initVM(page,blogs,prev,next);
             }).catch(function (e) {
                 alert('fail');
             });
