@@ -9,7 +9,7 @@ from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 from .emails import follower_notification
 from config import DATABASE_QUERY_TIMEOUT
 from flask_sqlalchemy import get_debug_queries
-
+import time
 
 # 两个 route 装饰器创建了从网址 / 以及 /index 到这个函数的映射
 # render_template 调用了 Jinja2 模板引擎，Jinja2 模板引擎是 Flask 框架的一部分。Jinja2 会把模板参数提供的相应的值替换了 {{…}} 块。
@@ -111,6 +111,7 @@ def logout():
 @app.route('/user/<nickname>/<int:page>')
 @login_required
 def user(nickname, page=1):
+    # time.sleep(10)
     user = User.query.filter_by(nickname=nickname).first()
     if user is None:
         flash('User ' + nickname + ' not found.')
@@ -294,7 +295,6 @@ def getblogs(page):
                     }})
 
 
-
 @app.route('/newblog', methods=['GET'])
 @login_required
 def newblog():
@@ -309,6 +309,7 @@ def bloglist(page=1):
     return render_template('blog_list.html',
                            title='blog list',
                            page=page)
+
 
 @app.route('/test', methods=['GET'])
 @login_required
