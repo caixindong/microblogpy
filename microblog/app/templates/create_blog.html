@@ -15,7 +15,7 @@
             </div>
         </div>
         <div>
-            <button v-on:click="postblog" class="btn btn-large btn-primary"><i>Post</i></button>
+            <button v-on:click="alerttest" class="btn btn-large btn-primary"><i>Post</i></button>
         </div>
         </form>
     </div>
@@ -32,6 +32,9 @@
                         }).catch(function (e) {
                             alert('发表失败');
                         });
+                    },
+                    alerttest: function (event) {
+                        alert('test');
                     }
                 }
             });
