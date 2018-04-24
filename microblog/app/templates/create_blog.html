@@ -14,9 +14,7 @@
                 <textarea v-model="content" rows="16" name="content" placeholder="内容" style="resize: none;width: 100%"></textarea>
             </div>
         </div>
-        <div>
-            <button @click="alerttest"><i>Post</i></button>
-        </div>
+        <button @click="postblog" class="btn btn-large btn-primary"><i>Post</i></button>
     </div>
     <script>
         function initVM(blog) {

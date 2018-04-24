@@ -10,6 +10,7 @@ from flask_mail import Mail
 from .momentjs import momentjs
 from flask_babel import Babel
 from flask_cors import CORS
+from flask_restful import Api
 
 app = Flask(__name__)
 
@@ -56,5 +57,7 @@ babel = Babel(app)
 
 CORS(app)
 
+api = Api(app)
+
 # 这句话放最后
-from app import views, models, mail
+from app import views
