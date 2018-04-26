@@ -49,7 +49,7 @@
             });
         }
         $(function () {
-            axios.get('/api/bloglist/'+{{ page }}).then(function (response) {
+            axios.get('/api/v2/bloglist/'+{{ page }}).then(function (response) {
                 var page = {{ page }};
                 var data = response['data'];
                 var result = data['result'];

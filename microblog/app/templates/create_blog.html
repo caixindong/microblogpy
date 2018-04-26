@@ -14,7 +14,9 @@
                 <textarea v-model="content" rows="16" name="content" placeholder="内容" style="resize: none;width: 100%"></textarea>
             </div>
         </div>
-        <button @click="postblog" class="btn btn-large btn-primary"><i>Post</i></button>
+        <div>
+            <button @click="postblog" class="btn btn-large btn-primary"><i>Post</i></button>
+        </div>
     </div>
     <script>
         function initVM(blog) {
@@ -23,7 +25,7 @@
                 data: blog,
                 methods: {
                     postblog: function (event) {
-                        axios.post('/api/blog', this.$data).then(function (response) {
+                        axios.post('/api/v2/bloglist', this.$data).then(function (response) {
                             setTimeout("javascript:location.href='index'", 1000);
                             alert('发表成功');
                         }).catch(function (e) {

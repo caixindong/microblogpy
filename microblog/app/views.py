@@ -2,7 +2,7 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, session, url_for, request, g, jsonify, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from app import app, lm, oid, db
+from app import app, lm, oid, db, api
 from .forms import LoginForm, EditForm, PostForm, SearchForm
 from .models import User, Post, Blog
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
@@ -10,6 +10,7 @@ from .emails import follower_notification
 from config import DATABASE_QUERY_TIMEOUT
 from flask_sqlalchemy import get_debug_queries
 import time
+from flask_restful import Resource, reqparse, abort
 
 # 两个 route 装饰器创建了从网址 / 以及 /index 到这个函数的映射
 # render_template 调用了 Jinja2 模板引擎，Jinja2 模板引擎是 Flask 框架的一部分。Jinja2 会把模板参数提供的相应的值替换了 {{…}} 块。
@@ -236,33 +237,30 @@ def after_request(response):
     return response
 
 
-@app.route('/api/tasks', methods=['GET'])
-def getTasks():
-    tasks = [
-        {
-            'id': 1,
-            'msg': 'help'
-        },
-        {
-            'id': 2,
-            'msg': 'no'
-        }
-    ]
-    return jsonify({'tasks': tasks})
+@app.route('/newblog', methods=['GET'])
+@login_required
+def newblog():
+    return render_template('create_blog.html',
+                           title='New blog')
 
 
-@app.route('/api/tasks/p', methods=['POST'])
-def posttasks():
-    if not request.json or not 'title' in request.json:
-        abort(400)
-    task = {
-        'title': request.json['title'],
-        'des': request.json.get('des', ''),
-        'done': False
-    }
-    return jsonify({'tasks': [task]}), 201
+@app.route('/bloglist', methods=['GET'])
+@app.route('/bloglist/<int:page>', methods=['GET'])
+@login_required
+def bloglist(page=1):
+    return render_template('blog_list.html',
+                           title='blog list',
+                           page=page)
 
 
+#测试用
+@app.route('/test', methods=['GET'])
+@login_required
+def test():
+    return render_template('test2.html')
+
+
+# 已废弃
 @app.route('/api/blog', methods=['POST'])
 @login_required
 def createblog():
@@ -278,6 +276,7 @@ def createblog():
     return jsonify({'code': 0}), 200
 
 
+# 已废弃
 @app.route('/api/bloglist/<int:page>', methods=['GET'])
 @login_required
 def getblogs(page):
@@ -295,23 +294,38 @@ def getblogs(page):
                     }})
 
 
-@app.route('/newblog', methods=['GET'])
-@login_required
-def newblog():
-    return render_template('create_blog.html',
-                           title='New blog')
+parser = reqparse.RequestParser()
+parser.add_argument('title', type=str, required=True, help='title to charge for this resource')
+parser.add_argument('content', type=str, required=True, help='content to charge for this resource')
 
 
-@app.route('/bloglist', methods=['GET'])
-@app.route('/bloglist/<int:page>', methods=['GET'])
-@login_required
-def bloglist(page=1):
-    return render_template('blog_list.html',
-                           title='blog list',
-                           page=page)
+class BlogAPI(Resource):
+    @login_required
+    def get(self, page):
+        # import pdb;pdb.set_trace()
+        blogs = g.user.blogs.order_by(Blog.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
+        bloglist = []
+        for blog in blogs.items:
+            blogjson = blog.toJSON()
+            bloglist.append(blogjson)
+        rsblogs = {'code': '0', 'result': {'blogs': bloglist, 'prev': blogs.has_prev, 'next': blogs.has_next}}
+        blogsjson = jsonify(rsblogs)
+        return blogsjson
+
+    @login_required
+    def post(self):
+        args = parser.parse_args()
+        if not args:
+            abort(406, message='not args')
+        if not 'title' in args:
+            abort(406, message='not args title')
+        if not 'content' in args:
+            abort(406, message='not args content')
+        blog = Blog(title=args['title'], content=args['content'], timestamp=datetime.utcnow(),
+                    author=g.user)
+        db.session.add(blog)
+        db.session.commit()
+        return {'code': 0}
 
 
-@app.route('/test', methods=['GET'])
-@login_required
-def test():
-    return render_template('test2.html')
+api.add_resource(BlogAPI, '/api/v2/bloglist', '/api/v2/bloglist/<int:page>')
