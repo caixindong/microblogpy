@@ -1,18 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Vue 测试实例 - 菜鸟教程(runoob.com)</title>
-<script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <meta charset="utf-8">
+    <title>Vue 测试实例 - 菜鸟教程(runoob.com)</title>
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div id="app">
-  <ol>
-    <li v-for="item in blogs">
-      ${ item }
-    </li>
-  </ol>
+    <h1 v-show="ok">V-SHOW</h1>
+    <p>${ message }</p>
+    <input v-model="message">
+    <ol>
+        <li v-for="item of blogs">
+        ${ item.title }
+        </li>
+    </ol>
+    <ol>
+        <todo-item v-for="item in groceryList" :todo="item" :key="item.id"></todo-item>
+    </ol>
+    <p :style="styleObj">test style sheet</p>
+    <p v-if="ok">YES</p>
+    <p v-else>NO</p>
+    <template v-if="loginType === 'username'">
+        <label>Username:</label>
+        <input placeholder="enter username" key="username">
+    </template>
+    <template v-else>
+        <label>Email:</label>
+        <input placeholder="enter email" key="email">
+    </template>
+    <br>
+    <button @click="changetype">change Type</button>
+    <ol>
+        <li v-for="value in user">
+            ${value}
+        </li>
+    </ol>
+    <button @click="greet('hi')">click hi</button>
 </div>
 
 <script>
@@ -20,18 +45,46 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                message: '123',
                 blogs: blogs,
-
-         },
-            delimiters: ['${','}']
-})
+                groceryList: [
+                    { id: 0, text: '蔬菜' },
+                    { id: 1, text: '奶酪' },
+                    { id: 2, text: '随便其它什么人吃的东西' }
+                ],
+                styleObj: {
+                    color: 'red',
+                    fontSize: '50px',
+                },
+                ok: false,
+                loginType: 'username',
+                user: {
+                    name: 'John',
+                    age: 12,
+                }
+            },
+            delimiters: ['${','}'],
+            methods: {
+                changetype: function (event) {
+                    if (this.loginType === 'username') {
+                        this.loginType = 'email';
+                    } else {
+                        this.loginType = 'username';
+                    }
+                    this.ok = !this.ok;
+                },
+                greet: function (msg) {
+                    alert(msg);
+                }
+            }
+        })
     }
-    axios.get('http://0.0.0.0:5000/api/bloglist/1').then(function (response) {
-                     alert(JSON.stringify(response));
-                 }).catch(function (e) {
-                     alert('fail');
-                 })
-initVM([{title: '123', author: 'dane',},{title: '44444', author: 'dddx'}]);
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>${ todo.text }</li>',
+        delimiters: ['${','}'],
+    });
+    initVM([{title: '123', author: 'dane',},{title: '44444', author: 'dddx'}]);
 </script>
 </body>
 </html>

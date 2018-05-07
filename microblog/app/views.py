@@ -253,7 +253,7 @@ def bloglist(page=1):
                            page=page)
 
 
-#测试用
+# 测试用
 @app.route('/test', methods=['GET'])
 @login_required
 def test():
@@ -294,10 +294,10 @@ def getblogs(page):
                     }})
 
 
+# Restful API
 parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, required=True, help='title to charge for this resource')
 parser.add_argument('content', type=str, required=True, help='content to charge for this resource')
-
 
 class BlogAPI(Resource):
     @login_required
@@ -315,12 +315,6 @@ class BlogAPI(Resource):
     @login_required
     def post(self):
         args = parser.parse_args()
-        if not args:
-            abort(406, message='not args')
-        if not 'title' in args:
-            abort(406, message='not args title')
-        if not 'content' in args:
-            abort(406, message='not args content')
         blog = Blog(title=args['title'], content=args['content'], timestamp=datetime.utcnow(),
                     author=g.user)
         db.session.add(blog)
