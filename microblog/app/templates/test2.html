@@ -39,9 +39,9 @@
     </ol>
     <button @click="greet('hi')">click hi</button>
     <button-counter></button-counter>
-    <blog-post title="hello world"></blog-post>
-    <blog-post title="Vue"></blog-post>
-    <blog-post v-for="post in posts" v-bind:title="post.title" v-bind:key="post.id"></blog-post>
+    <div :style="{ fontSize: postFontSize + 'em' }">
+        <blog-post v-for="post in posts" v-bind:post="post" v-bind:key="post.id" v-on:enlarge-text="postFontSize += $event"></blog-post>
+    </div>
 </div>
 
 <script>
@@ -71,6 +71,8 @@
                     { id: 2, title: 'Blogging with Vue' },
                     { id: 3, title: 'Why Vue is so fun' },
                 ],
+                postFontSize: 1,
+
             },
             delimiters: ['${','}'],
             methods: {
@@ -102,8 +104,16 @@
         template: '<button v-on:click="count++">You click me {{ count }} times.</button>'
     });
     Vue.component('blog-post',{
-        props: ['title'],
-        template: '<h1>{{ title }}</h1>',
+        props: ['post'],
+        template: `
+        <div class="blog-post">
+            <h3>{{ post.title }}</h3>
+            <button v-on:click="$emit('enlarge-text',0.1)">
+                Enlarge text
+            </button>
+            <div v-html="post.content"></div>
+        </div>
+        `
     });
     initVM([{title: '123', author: 'dane',},{title: '44444', author: 'dddx'}]);
 </script>
